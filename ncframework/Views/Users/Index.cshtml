@@ -1,0 +1,61 @@
+﻿@model ReflectionIT.Mvc.Paging.PagingList<ncframework.Models.User>
+@using ReflectionIT.Mvc.Paging
+@addTagHelper *, ReflectionIT.Mvc.Paging
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3>Index User</h3>
+
+<form role="search">
+    <div class="form-group">
+
+        <input type="text" class="form-control" placeholder="Search" name="filter" value="@Model.RouteValue["Filter"]">
+
+    </div>
+    <input type="submit" class="btn-link btn" value="Search">
+    <a asp-action="Create" class="btn-link btn">Create</a>
+</form>
+<hr />
+<nav aria-label="Page navigation">
+    <vc:pager paging-list="@Model" />
+</nav>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.SortableHeaderFor(model => model.UserId, this.Model)
+            </th>
+
+            <th>
+                @Html.SortableHeaderFor(model => model.Employee, this.Model)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsAdmin)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Employee.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsAdmin)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

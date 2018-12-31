@@ -1,0 +1,92 @@
+﻿
+@model ReflectionIT.Mvc.Paging.PagingList<ncframework.Models.Employee>
+@using ReflectionIT.Mvc.Paging
+@addTagHelper *, ReflectionIT.Mvc.Paging
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3>Index Employee</h3>
+
+<form role="search">
+    <div class="form-group">
+
+        <input type="text" class="form-control" placeholder="Search" name="filter" value="@Model.RouteValue["Filter"]">
+
+    </div>
+    <input type="submit" class="btn-link btn" value="Search">
+    <a asp-action="Create" class="btn-link btn">Create</a>
+</form>
+<hr />
+<nav aria-label="Page navigation">
+    <vc:pager paging-list="@Model" />
+</nav>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.SortableHeaderFor(model => model.Name, this.Model)
+            </th>
+            <th>
+                @Html.SortableHeaderFor(model => model.Code, this.Model)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Photo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Parent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GroupId) @Html.SortableHeaderFor(model => model.Group.Name, this.Model)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GroupMenu)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Photo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Parent.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Group.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GroupMenu)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

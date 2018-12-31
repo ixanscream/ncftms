@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/vis/dist/vis.min.css" rel="stylesheet" />
+<link href="~/lib/vis/dist/vis-network.min.css" rel="stylesheet" />
+<style type="text/css">
+    #mynetwork {
+        height: 100vh;
+        background-color:lightsteelblue;
+    }
+</style>
+<div class="form-control bg-green" id="mynetwork"></div>
+
+@section Scripts {
+<script src="~/lib/vis/dist/vis.min.js"></script>
+    <script>
+        $(function () {
+
+            draw();
+    
+        });
+
+        var network = null;
+        var layoutMethod = "directed";
+
+        function destroy() {
+            if (network !== null) {
+                network.destroy();
+                network = null;
+            }
+        }
+
+        function draw() {
+            destroy();
+            var nodeOptions = {};
+            var edgeOptions = {};
+            var nodes = new vis.DataSet(options);
+            var edges = new vis.DataSet(options);
+            var datadocument = [];
+            $.ajax({
+                url: "/organization/GetOrg/",
+                type: "POST",
+                dataType: "JSON",
+                success: function (r) {
+                    console.log(r);
+                    $.each(r, function (key, value) {
+                        datadocument.push(value);
+                    });
+
+                    for (var a = 0; a < datadocument.length; a++) {
+                        nodes.add([
+                            { id: datadocument[a].id, label: datadocument[a].name }
+                        ]);
+
+                        if (datadocument[a].parentId != null) {
+                            edges.add([
+                                { from: datadocument[a].parentId, to: datadocument[a].id }
+                            ]);
+                        }
+
+                    }
+                }
+            });
+
+      
+
+            // create a network
+            var container = document.getElementById('mynetwork');
+            var data = {
+                nodes: nodes,
+                edges: edges
+            };
+
+            var options = {
+                layout: {
+                    hierarchical: {
+                        sortMethod: layoutMethod
+                    }
+                },
+                edges: {
+                    smooth: true,
+                    arrows: { to: true }
+                },
+                nodes: {
+                    shape: 'box',
+                    borderWidth: 2,
+                    size: 30,
+                    color: {
+                        border: '#fff',
+                        background: '#666666'
+                    },
+                    font: { color: 'white' }
+                }
+            };
+            network = new vis.Network(container, data, options);
+            network.on('doubleClick', function (params) {
+                if (params.nodes[0] != null) {
+                    window.open(
+                        "/EmployeesPartial/Index/" + params.nodes[0],
+                        "_blank",
+                        "scrollbars=1,width=700,height=900"
+                    );
+                }
+
+            });
+        }
+
+    </script>
+}
